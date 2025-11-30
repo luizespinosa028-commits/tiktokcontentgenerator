@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Viral TikTok Content Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .main-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            margin-bottom: 20px;
+        }
+
+        .input-section {
+            margin-bottom: 25px;
+        }
+
+        .input-section label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        .input-section select,
+        .input-section textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        .input-section select:focus,
+        .input-section textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .input-section textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .button-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .btn {
+            padding: 15px 25px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: white;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(245, 87, 108, 0.4);
+        }
+
+        .btn-tertiary {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .btn-tertiary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(79, 172, 254, 0.4);
+        }
+
+        .result-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 5px solid #667eea;
+        }
+
+        .result-card h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .result-card p {
+            color: #555;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        .trending-topics {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .topic-tag {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .topic-tag:hover {
+            transform: scale(1.05);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #667eea;
+            font-size: 1.2em;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .action-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            margin: 10px 10px 0 0;
+            transition: background 0.3s;
+        }
+
+        .action-btn:hover {
+            background: #218838;
+        }
+
+        .save-btn {
+            background: #667eea;
+        }
+
+        .save-btn:hover {
+            background: #5568d3;
+        }
+
+        .library-section {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            margin-top: 20px;
+        }
+
+        .library-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .library-header h3 {
+            color: #667eea;
+            margin: 0;
+        }
+
+        .library-controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        .library-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border-left: 4px solid #667eea;
+        }
+
+        .library-item h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .library-item p {
+            color: #555;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            margin-bottom: 10px;
+        }
+
+        .library-item small {
+            color: #999;
+            font-size: 0.85em;
+        }
+
+        .badge {
+            background: #667eea;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            margin-left: 10px;
+        }
+
+        .delete-btn {
+            background: #dc3545;
+        }
+
+        .delete-btn:hover {
+            background: #c82333;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .main-card, .library-section {
+                padding: 20px;
+            }
+            
+            .button-group {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎬 Viral TikTok Content Generator</h1>
+            <p>AI-Powered Video Ideas, Scripts & Captions</p>
+        </div>
+
+        <div class="main-card">
+            <div class="input-section">
+                <label>Your Niche/Topic</label>
+                <select id="niche">
+                    <option value="">Select a niche...</option>
+                    <option value="fitness & workout">Fitness & Workout</option>
+                    <option value="cooking & recipes">Cooking & Recipes</option>
+                    <option value="tech reviews">Tech Reviews</option>
+                    <option value="comedy & skits">Comedy & Skits</option>
+                    <option value="beauty & makeup">Beauty & Makeup</option>
+                    <option value="fashion & style">Fashion & Style</option>
+                    <option value="travel & adventure">Travel & Adventure</option>
+                    <option value="productivity & motivation">Productivity & Motivation</option>
+                    <option value="personal finance">Personal Finance</option>
+                    <option value="pet content">Pet Content</option>
+                    <option value="DIY & crafts">DIY & Crafts</option>
+                    <option value="gaming">Gaming</option>
+                    <option value="education & learning">Education & Learning</option>
+                    <option value="mental health & wellness">Mental Health & Wellness</option>
+                    <option value="parenting">Parenting</option>
+                    <option value="music & singing">Music & Singing</option>
+                    <option value="dance">Dance</option>
+                    <option value="art & drawing">Art & Drawing</option>
+                    <option value="photography">Photography</option>
+                    <option value="real estate">Real Estate</option>
+                    <option value="entrepreneurship">Entrepreneurship</option>
+                    <option value="car content">Car Content</option>
+                    <option value="book reviews">Book Reviews</option>
+                    <option value="anime & manga">Anime & Manga</option>
+                    <option value="sports">Sports</option>
+                </select>
+            </div>
+
+            <div class="input-section">
+                <label>Content Style</label>
+                <select id="style">
+                    <option value="educational">Educational</option>
+                    <option value="entertainment">Entertainment</option>
+                    <option value="tutorial">Tutorial/How-To</option>
+                    <option value="storytime">Storytime</option>
+                    <option value="trend">Trending Challenge</option>
+                    <option value="review">Product Review</option>
+                    <option value="behind-the-scenes">Behind the Scenes</option>
+                    <option value="transformation">Transformation/Before & After</option>
+                    <option value="reaction">Reaction Video</option>
+                    <option value="pov">POV (Point of View)</option>
+                </select>
+            </div>
+
+            <div class="input-section">
+                <label>Video Length</label>
+                <select id="length">
+                    <option value="15-30">15-30 seconds</option>
+                    <option value="30-60">30-60 seconds</option>
+                    <option value="60-90">60-90 seconds</option>
+                </select>
+            </div>
+
+            <div class="input-section">
+                <label>Target Audience</label>
+                <select id="audience">
+                    <option value="">Select audience...</option>
+                    <option value="Gen Z (18-24)">Gen Z (18-24)</option>
+                    <option value="Millennials (25-40)">Millennials (25-40)</option>
+                    <option value="Gen X (41-56)">Gen X (41-56)</option>
+                    <option value="All ages">All Ages</option>
+                    <option value="Teens (13-17)">Teens (13-17)</option>
+                    <option value="Young professionals">Young Professionals</option>
+                    <option value="Parents">Parents</option>
+                    <option value="Students">Students</option>
+                    <option value="Entrepreneurs">Entrepreneurs</option>
+                </select>
+            </div>
+
+            <div class="input-section">
+                <label>Tone/Vibe</label>
+                <select id="tone">
+                    <option value="">Select tone...</option>
+                    <option value="funny & humorous">Funny & Humorous</option>
+                    <option value="inspirational & motivational">Inspirational & Motivational</option>
+                    <option value="casual & relatable">Casual & Relatable</option>
+                    <option value="professional & informative">Professional & Informative</option>
+                    <option value="dramatic & emotional">Dramatic & Emotional</option>
+                    <option value="energetic & upbeat">Energetic & Upbeat</option>
+                    <option value="chill & calming">Chill & Calming</option>
+                    <option value="edgy & controversial">Edgy & Controversial</option>
+                </select>
+            </div>
+
+            <div class="input-section">
+                <label>Additional Details (Optional)</label>
+                <textarea id="details" placeholder="Any specific requirements, themes, or ideas you want to include..."></textarea>
+            </div>
+
+            <div class="button-group">
+                <button class="btn btn-primary" id="btnIdeas">💡 Generate Ideas</button>
+                <button class="btn btn-secondary" id="btnScript">📝 Generate Script</button>
+                <button class="btn btn-tertiary" id="btnCaptions">✨ Generate Captions</button>
+            </div>
+
+            <div id="results"></div>
+        </div>
+
+        <div id="library" style="display: none;"></div>
+    </div>
+
+    <script>
+        let savedLibrary = [];
+        let currentContent = null;
+
+        const trendingTopics = [
+            "AI technology", "productivity hacks", "morning routines", "food trends",
+            "travel destinations", "fitness challenges", "DIY projects", "life hacks",
+            "book recommendations", "skincare routines", "budgeting tips", "mental health",
+            "pet content", "fashion trends", "tech gadgets", "cooking hacks"
+        ];
+
+        document.getElementById('btnIdeas').addEventListener('click', generateIdeas);
+        document.getElementById('btnScript').addEventListener('click', generateScript);
+        document.getElementById('btnCaptions').addEventListener('click', generateCaptions);
+
+        function generateIdeas() {
+            const niche = document.getElementById('niche').value;
+            if (!niche) {
+                alert('Please select your niche/topic');
+                return;
+            }
+
+            const style = document.getElementById('style').value;
+            const tone = document.getElementById('tone').value;
+            
+            showLoading();
+            
+            setTimeout(() => {
+                const content = createIdeasContent(niche, style, tone);
+                displayResults('💡 Viral Video Ideas', content);
+            }, 1500);
+        }
+
+        function generateScript() {
+            const niche = document.getElementById('niche').value;
+            if (!niche) {
+                alert('Please select your niche/topic');
+                return;
+            }
+
+            const style = document.getElementById('style').value;
+            const length = document.getElementById('length').value;
+            const tone = document.getElementById('tone').value;
+            
+            showLoading();
+            
+            setTimeout(() => {
+                const content = createScriptContent(niche, style, length, tone);
+                displayResults('📝 TikTok Script', content);
+            }, 1500);
+        }
+
+        function generateCaptions() {
+            const niche = document.getElementById('niche').value;
+            if (!niche) {
+                alert('Please select your niche/topic');
+                return;
+            }
+
+            const style = document.getElementById('style').value;
+            const tone = document.getElementById('tone').value;
+            
+            showLoading();
+            
+            setTimeout(() => {
+                const content = createCaptionsContent(niche, style, tone);
+                displayResults('✨ Viral Captions & Hashtags', content);
+            }, 1500);
+        }
+
+        function createIdeasContent(niche, style, tone) {
+            return `1. "${niche} Challenge That Went Wrong!" - Start with a shocking moment that hooks viewers in the first 2 seconds. Show the process and unexpected outcome. End with a lesson learned.
+
+2. "3 ${niche} Secrets Nobody Talks About" - Use text overlays for each secret. Build suspense between reveals. Style: ${style}, Tone: ${tone}
+
+3. "POV: You're trying ${niche} for the first time" - Relatable scenario that your audience will connect with. Show genuine reactions and emotions.
+
+4. "${niche} Before vs After Transformation" - Side-by-side comparison that showcases dramatic results. Use trending audio for maximum reach.
+
+5. "This ${niche} Hack Changed My Life (No Clickbait)" - Demonstrate a practical tip that viewers can immediately apply. Include clear step-by-step instructions.`;
+        }
+
+        function createScriptContent(niche, style, length, tone) {
+            return `[0-3 seconds] HOOK
+"Wait... you've been doing ${niche} all wrong!"
+[Show surprising or shocking visual]
+
+[3-15 seconds] PROBLEM
+"I used to struggle with ${niche} until I discovered this..."
+[Build curiosity, show relatable struggle]
+
+[15-40 seconds] SOLUTION
+"Here's the ${style} way to approach ${niche}:"
+• Point 1: [Key insight]
+• Point 2: [Practical tip]
+• Point 3: [Game-changing advice]
+
+[40-50 seconds] RESULTS
+"After trying this, everything changed..."
+[Show transformation or results]
+
+[50-60 seconds] CALL TO ACTION
+"Follow for more ${niche} content!"
+"Comment which tip you'll try first! 👇"
+
+NOTES:
+- Tone: ${tone}
+- Length: ${length}
+- Use trending audio for better reach
+- Add text overlays for key points
+- Include smooth transitions`;
+        }
+
+        function createCaptionsContent(niche, style, tone) {
+            const nicheTag = niche.replace(/ /g, '');
+            return `1. "This ${niche} tip literally changed everything 😱 Who else needs to hear this? 💭 #${nicheTag} #viral #fyp #trending #lifehack"
+
+2. "POV: You finally figured out ${niche} ✨ Tag someone who needs this! 👇 #${nicheTag} #${style} #tutorial #contentcreator"
+
+3. "Everyone's doing ${niche} wrong... here's the RIGHT way 🔥 Save this for later! #${nicheTag} #tips #hacks #viral"
+
+4. "Wait for the end 👀 Best ${niche} hack ever! Comment 'YES' if you learned something new 💡 #${nicheTag} #trending #fyp"
+
+5. "3 ${niche} secrets nobody tells you about 🤫 Which one surprised you most? #${nicheTag} #secrets #mustknow #viral #foryou"`;
+        }
+
+        function showLoading() {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<div class="loading"><div class="spinner"></div><p>Generating viral content...</p></div>';
+        }
+
+        function displayResults(title, content) {
+            currentContent = { title, content };
+            
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '';
+
+            const resultCard = document.createElement('div');
+            resultCard.className = 'result-card';
+
+            const titleEl = document.createElement('h3');
+            titleEl.textContent = title;
+
+            const contentEl = document.createElement('p');
+            contentEl.textContent = content;
+
+            const copyBtn = document.createElement('button');
+            copyBtn.className = 'action-btn';
+            copyBtn.textContent = '📋 Copy to Clipboard';
+            copyBtn.onclick = copyCurrentContent;
+
+            const saveBtn = document.createElement('button');
+            saveBtn.className = 'action-btn save-btn';
+            saveBtn.textContent = '💾 Save to Library';
+            saveBtn.onclick = saveCurrentToLibrary;
+
+            resultCard.appendChild(titleEl);
+            resultCard.appendChild(contentEl);
+            resultCard.appendChild(copyBtn);
+            resultCard.appendChild(saveBtn);
+
+            const trendingCard = document.createElement('div');
+            trendingCard.className = 'result-card';
+
+            const trendingTitle = document.createElement('h3');
+            trendingTitle.textContent = '🔥 Trending Topics to Explore';
+
+            const trendingDiv = document.createElement('div');
+            trendingDiv.className = 'trending-topics';
+
+            const shuffled = trendingTopics.sort(() => 0.5 - Math.random()).slice(0, 8);
+            shuffled.forEach(topic => {
+                const tag = document.createElement('div');
+                tag.className = 'topic-tag';
+                tag.textContent = '#' + topic.replace(/ /g, '');
+                tag.onclick = () => {
+                    document.getElementById('niche').value = topic;
+                };
+                trendingDiv.appendChild(tag);
+            });
+
+            trendingCard.appendChild(trendingTitle);
+            trendingCard.appendChild(trendingDiv);
+
+            resultsDiv.appendChild(resultCard);
+            resultsDiv.appendChild(trendingCard);
+        }
+
+        function copyCurrentContent() {
+            if (currentContent) {
+                navigator.clipboard.writeText(currentContent.content).then(() => {
+                    alert('Copied to clipboard!');
+                }).catch(() => {
+                    alert('Failed to copy');
+                });
+            }
+        }
+
+        function saveCurrentToLibrary() {
+            if (currentContent) {
+                const timestamp = new Date().toLocaleString();
+                const niche = document.getElementById('niche').value || 'General';
+                
+                savedLibrary.push({
+                    title: currentContent.title,
+                    content: currentContent.content,
+                    niche: niche,
+                    timestamp: timestamp
+                });
+
+                updateLibraryDisplay();
+                alert('✅ Saved to library!');
+            }
+        }
+
+        function updateLibraryDisplay() {
+            const libraryDiv = document.getElementById('library');
+
+            if (savedLibrary.length === 0) {
+                libraryDiv.style.display = 'none';
+                return;
+            }
+
+            libraryDiv.style.display = 'block';
+            libraryDiv.innerHTML = '';
+
+            const section = document.createElement('div');
+            section.className = 'library-section';
+
+            const header = document.createElement('div');
+            header.className = 'library-header';
+
+            const headerTitle = document.createElement('h3');
+            headerTitle.innerHTML = '📚 Saved Content Library <span class="badge">' + savedLibrary.length + '</span>';
+
+            const controls = document.createElement('div');
+            controls.className = 'library-controls';
+
+            const exportBtn = document.createElement('button');
+            exportBtn.className = 'action-btn';
+            exportBtn.textContent = '📥 Export All';
+            exportBtn.onclick = exportAllContent;
+
+            const clearBtn = document.createElement('button');
+            clearBtn.className = 'action-btn delete-btn';
+            clearBtn.textContent = '🗑️ Clear All';
+            clearBtn.onclick = clearLibrary;
+
+            controls.appendChild(exportBtn);
+            controls.appendChild(clearBtn);
+
+            header.appendChild(headerTitle);
+            header.appendChild(controls);
+
+            section.appendChild(header);
+
+            savedLibrary.slice().reverse().forEach((item, index) => {
+                const actualIndex = savedLibrary.length - 1 - index;
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'library-item';
+
+                const titleEl = document.createElement('h4');
+                titleEl.textContent = item.title;
+
+                const contentEl = document.createElement('p');
+                contentEl.textContent = item.content;
+
+                const metaEl = document.createElement('small');
+                metaEl.textContent = '📁 ' + item.niche + ' | 🕐 ' + item.timestamp;
+
+                const btnDiv = document.createElement('div');
+
+                const copyBtn = document.createElement('button');
+                copyBtn.className = 'action-btn';
+                copyBtn.textContent = '📋 Copy';
+                copyBtn.onclick = () => {
+                    navigator.clipboard.writeText(item.content).then(() => {
+                        alert('Copied!');
+                    });
+                };
+
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'action-btn delete-btn';
+                deleteBtn.textContent = '🗑️ Delete';
+                deleteBtn.onclick = () => {
+                    if (confirm('Delete this item?')) {
+                        savedLibrary.splice(actualIndex, 1);
+                        updateLibraryDisplay();
+                    }
+                };
+
+                btnDiv.appendChild(copyBtn);
+                btnDiv.appendChild(deleteBtn);
+
+                itemDiv.appendChild(titleEl);
+                itemDiv.appendChild(contentEl);
+                itemDiv.appendChild(metaEl);
+                itemDiv.appendChild(btnDiv);
+
+                section.appendChild(itemDiv);
+            });
+
+            libraryDiv.appendChild(section);
+        }
+
+        function clearLibrary() {
+            if (confirm('Clear all saved content?')) {
+                savedLibrary = [];
+                updateLibraryDisplay();
+                alert('Library cleared!');
+            }
+        }
+
+        function exportAllContent() {
+            if (savedLibrary.length === 0) {
+                alert('No content to export!');
+                return;
+            }
+
+            let text = '🎬 VIRAL TIKTOK CONTENT LIBRARY\n';
+            text += '='.repeat(50) + '\n\n';
+
+            savedLibrary.forEach((item, index) => {
+                text += (index + 1) + '. ' + item.title + '\n';
+                text += 'Niche: ' + item.niche + '\n';
+                text += 'Generated: ' + item.timestamp + '\n';
+                text += '-'.repeat(50) + '\n';
+                text += item.content + '\n\n';
+                text += '='.repeat(50) + '\n\n';
+            });
+
+            const blob = new Blob([text], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'tiktok-content-library-' + Date.now() + '.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            alert('📥 Content exported!');
+        }
+    </script>
+</body>
+</html>
